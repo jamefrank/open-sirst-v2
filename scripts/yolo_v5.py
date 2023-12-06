@@ -1,10 +1,12 @@
 import os
 import xml.etree.ElementTree as ET
 from tqdm import tqdm
+from PIL import Image
 
 script_path = os.path.abspath(__file__)
 script_folder = os.path.dirname(script_path)
 print(script_folder)
+
 
 folder_path = script_folder + "/../images/targets"
 
@@ -21,9 +23,18 @@ annotation_dir = script_folder + "/../annotations/bboxes"
 label_dir = script_folder + "/../label"
 if not os.path.exists(label_dir):
     os.mkdir(label_dir)
+jpg_dir = script_folder + "/../jpg"
+if not os.path.exists(jpg_dir):
+    os.mkdir(jpg_dir)
 
 
 for file in tqdm(sorted_jpg_files):
+    #
+    png_image = Image.open(folder_path + "/" + file)
+    jpg_image = png_image.convert("RGB")
+    jpg_image.save(jpg_dir+"/"+os.path.splitext(file)[0] + ".jpg")
+
+    #
     xml_file = os.path.splitext(file)[0] + ".xml"
     tree = ET.parse(annotation_dir+"/"+xml_file)
     root = tree.getroot()
